@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>app.properties</value>
+        </property>
+    </bean>
+
+    <bean name="dispatcher" class="jpinger.Dispatcher">
+        <property name="numberOfThreads" value="${app.numberOfThreads:10}"/>
+        <property name="pingTimeoutSeconds" value="${app.pingTimeoutSeconds:10}"/>
+        <property name="pauseTimeMilliseconds" value="100"/>
+        <property name="storage" ref="hostStorage"/>
+        <property name="messagerFactory" ref="messagerFactory"/>
+    </bean>
+
+    <bean name="hostStorage" class="jpinger.HostsStorage">
+        <property name="outSaver" ref="consoleSaver"/>
+        <property name="inetHosts" value="${app.hosts}"/>
+    </bean>
+
+    <bean id="messagerFactory" class="jpinger.QueueRunnableMessagerFactory"/>
+
+    <bean id="consoleSaver" class="jpinger.HostConsoleSaver"/>
+
+
+</beans>
